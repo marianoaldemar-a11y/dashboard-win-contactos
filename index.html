@@ -78,7 +78,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-se
   </div>
   <div class="header-meta">
     <div class="header-badge">Registros: <b>28,872</b></div>
-    <div class="header-badge">Actualizado: <b>08/04/2026 15:54</b></div>
+    <div class="header-badge">Actualizado: <b>08/04/2026 16:00</b></div>
   </div>
 </div>
 
@@ -127,9 +127,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-se
   <div class="chart-card"><div class="chart-title">📊 Motivos por Departamento</div><div class="chart-sub">Distribución proporcional de categorías</div><canvas id="chartDepMot" height="240"></canvas></div>
 </div>
 
-<div class="section-header">Evolutivo Mensual por Motivo Específico</div>
-<div class="charts-grid" style="grid-template-columns:1fr">
-  <div class="chart-card"><div class="chart-title">📈 Evolución Mensual · Top 10 Motivos Específicos (Nivel 2)</div><div class="chart-sub">Tendencia mensual de los 10 motivos N2 con mayor volumen (según filtros aplicados) · excluye sin clasificar</div><canvas id="chartEvolM2" height="100"></canvas></div>
+<div class="section-header">Evolutivo Mensual por Motivo Específico (Nivel 2)</div>
+<div class="charts-grid">
+  <div class="chart-card"><div class="chart-title">🥇 Evolutivo Mensual · Top 5 Motivos N2</div><div class="chart-sub">Los 5 motivos específicos con mayor volumen · tendencia mes a mes · según filtros</div><canvas id="chartEvolM2top5" height="200"></canvas></div>
+  <div class="chart-card"><div class="chart-title">📈 Evolutivo Mensual · Top 10 Motivos N2</div><div class="chart-sub">Los 10 motivos específicos con mayor volumen · tendencia mes a mes · según filtros</div><canvas id="chartEvolM2" height="200"></canvas></div>
 </div>
 
 <div class="section-header">Rankings Rápidos</div>
@@ -149,7 +150,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-se
 </div>
 </div>
 
-<div class="footer">WIN Dashboard · Gerencia de Procesos · Sep-25 – Feb-26 · Total: 1,747,894 contactos · Actualizado: 08/04/2026 15:54</div>
+<div class="footer">WIN Dashboard · Gerencia de Procesos · Sep-25 – Feb-26 · Total: 1,747,894 contactos · Actualizado: 08/04/2026 16:00</div>
 
 <script>
 const MESES  = ["Sep-25", "Oct-25", "Nov-25", "Dic-25", "Ene-26", "Feb-26"];
@@ -228,7 +229,7 @@ function updateKPIs(rows){
   document.getElementById('kpi-ant').textContent=total>0?ANTS[ai]:'—';
   document.getElementById('kpi-ant-cnt').textContent=fmt(byAnt[ai]);
 }
-let cTrend,cDep,cMotivo,cAnt,cMot2,cDepMot,cEvolM2;
+let cTrend,cDep,cMotivo,cAnt,cMot2,cDepMot,cEvolM2top5,cEvolM2;
 function initCharts(){
   cTrend=new Chart(document.getElementById('chartTrend'),{type:'line',data:{labels:MESES,datasets:[{label:'Lima',data:[],borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',borderWidth:2.5,pointRadius:5,fill:true,tension:.3},{label:'Resto',data:[],borderColor:'#059669',backgroundColor:'rgba(5,150,105,.07)',borderWidth:2.5,pointRadius:5,fill:true,tension:.3},{label:'Total',data:[],borderColor:'#d97706',backgroundColor:'transparent',borderWidth:2,borderDash:[5,4],pointRadius:4,fill:false,tension:.3}]},options:{responsive:true,plugins:{legend:{position:'top',labels:{usePointStyle:true}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{y:{grid:{color:'#f1f5f9'},ticks:{callback:v=>(v/1000).toFixed(0)+'K'}},x:{grid:{display:false}}}}});
   cDep=new Chart(document.getElementById('chartDep'),{type:'bar',data:{labels:DEPTOS,datasets:[{label:'Contactos',data:[],backgroundColor:COLORS,borderRadius:6,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmt(c.raw)} contactos`}}},scales:{x:{grid:{color:'#f1f5f9'},ticks:{callback:v=>(v/1000).toFixed(0)+'K'}},y:{grid:{display:false}}}}});
@@ -236,7 +237,9 @@ function initCharts(){
   cAnt=new Chart(document.getElementById('chartAnt'),{type:'bar',data:{labels:ANTS,datasets:[{label:'Contactos',data:[],backgroundColor:'#2563eb',borderRadius:5,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmt(c.raw)} contactos`}}},scales:{y:{grid:{color:'#f1f5f9'},ticks:{callback:v=>(v/1000).toFixed(0)+'K'}},x:{grid:{display:false},ticks:{font:{size:10}}}}}});
   cMot2=new Chart(document.getElementById('chartMot2'),{type:'bar',data:{labels:[],datasets:[{label:'Contactos',data:[],backgroundColor:[],borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmt(c.raw)} contactos`}}},scales:{x:{grid:{color:'#f1f5f9'},ticks:{callback:v=>(v/1000).toFixed(0)+'K'}},y:{grid:{display:false},ticks:{font:{size:11}}}}}});
   cDepMot=new Chart(document.getElementById('chartDepMot'),{type:'bar',data:{labels:DEPTOS,datasets:M1S.map((m,i)=>{return{label:m,data:[],backgroundColor:PALETTE[i],borderRadius:3,stack:'s'}})},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,font:{size:10}}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{callback:v=>(v/1000).toFixed(0)+'K'}}}}});
-  cEvolM2=new Chart(document.getElementById('chartEvolM2'),{type:'line',data:{labels:MESES,datasets:[]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{usePointStyle:true,font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{y:{grid:{color:'#f1f5f9'},ticks:{callback:v=>(v/1000).toFixed(0)+'K'}},x:{grid:{display:false}}}}});
+  const evolOpts=(sz)=>{return{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{usePointStyle:true,font:{size:sz},boxWidth:10}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{y:{grid:{color:'#f1f5f9'},ticks:{callback:v=>(v/1000).toFixed(0)+'K'}},x:{grid:{display:false}}}}};
+  cEvolM2top5=new Chart(document.getElementById('chartEvolM2top5'),{type:'line',data:{labels:MESES,datasets:[]},options:evolOpts(11)});
+  cEvolM2=new Chart(document.getElementById('chartEvolM2'),{type:'line',data:{labels:MESES,datasets:[]},options:evolOpts(10)});
 }
 function updateCharts(rows){
   const byMes=sumBy(rows,0,MESES),byDep=sumBy(rows,1,DEPTOS),byM1=sumBy(rows,3,M1S),byAnt=sumBy(rows,2,ANTS);
@@ -251,7 +254,9 @@ function updateCharts(rows){
   const byM2=sumBy(rows,4,M2S);const m2p=byM2.map((v,i)=>{return{i,v,l:M2S[i]}}).filter(x=>x.l!=='-'&&x.v>0).sort((a,b)=>b.v-a.v).slice(0,10);
   cMot2.data.labels=m2p.map(x=>x.l);cMot2.data.datasets[0].data=m2p.map(x=>x.v);cMot2.data.datasets[0].backgroundColor=m2p.map((_,i)=>COLORS[i%COLORS.length]);cMot2.update();
   const evolColors=['#2563eb','#e85d04','#059669','#d97706','#7c3aed','#db2777','#0891b2','#16a34a','#9333ea','#ea580c'];
-  cEvolM2.data.datasets=m2p.map((x,ci)=>{const series=new Array(MESES.length).fill(0);rows.forEach(r=>{if(r[4]===x.i)series[r[0]]+=r[5]});return{label:x.l,data:series,borderColor:evolColors[ci],backgroundColor:'transparent',borderWidth:2,pointRadius:4,pointHoverRadius:6,fill:false,tension:.35}});cEvolM2.update();
+  const buildEvolDS=(list)=>list.map((x,ci)=>{const series=new Array(MESES.length).fill(0);rows.forEach(r=>{if(r[4]===x.i)series[r[0]]+=r[5]});return{label:x.l,data:series,borderColor:evolColors[ci],backgroundColor:'transparent',borderWidth:ci<5?2.5:1.8,pointRadius:ci<5?4:3,pointHoverRadius:6,fill:false,tension:.35}});
+  cEvolM2top5.data.datasets=buildEvolDS(m2p.slice(0,5));cEvolM2top5.update();
+  cEvolM2.data.datasets=buildEvolDS(m2p);cEvolM2.update();
   const mat=sumByTwo(rows,1,DEPTOS.length,3,M1S.length);cDepMot.data.datasets.forEach((ds,mi)=>{ds.data=mat.map(r=>r[mi])});cDepMot.update();
 }
 function updateRankings(rows){
