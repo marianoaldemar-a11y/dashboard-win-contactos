@@ -78,7 +78,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-se
   </div>
   <div class="header-meta">
     <div class="header-badge">Registros: <b>28,872</b></div>
-    <div class="header-badge">Actualizado: <b>08/04/2026 16:00</b></div>
+    <div class="header-badge">Actualizado: <b>09/04/2026 09:42</b></div>
   </div>
 </div>
 
@@ -150,7 +150,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-se
 </div>
 </div>
 
-<div class="footer">WIN Dashboard · Gerencia de Procesos · Sep-25 – Feb-26 · Total: 1,747,894 contactos · Actualizado: 08/04/2026 16:00</div>
+<div class="footer">WIN Dashboard · Gerencia de Procesos · Sep-25 – Feb-26 · Total: 1,747,894 contactos · Actualizado: 09/04/2026 09:42</div>
 
 <script>
 const MESES  = ["Sep-25", "Oct-25", "Nov-25", "Dic-25", "Ene-26", "Feb-26"];
@@ -243,7 +243,6 @@ function initCharts(){
 }
 function updateCharts(rows){
   const byMes=sumBy(rows,0,MESES),byDep=sumBy(rows,1,DEPTOS),byM1=sumBy(rows,3,M1S),byAnt=sumBy(rows,2,ANTS);
-  // Lima: indices where depto contains 'Lima'
   const limaIdx=DEPTOS.map((d,i)=>d.includes('Lima')?i:-1).filter(i=>i>=0);
   const limaM=new Array(MESES.length).fill(0),otrosM=new Array(MESES.length).fill(0);
   rows.forEach(r=>{if(limaIdx.includes(r[1]))limaM[r[0]]+=r[5];else otrosM[r[0]]+=r[5]});
